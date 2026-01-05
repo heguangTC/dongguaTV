@@ -45,6 +45,34 @@ function copyDir(src, dest) {
     }
 }
 
+// 添加 namespace 到 build.gradle (AGP 8 兼容性)
+function addNamespace(buildGradlePath, namespace) {
+    if (!fs.existsSync(buildGradlePath)) {
+        console.log('  ⚠️ build.gradle not found at:', buildGradlePath);
+        return false;
+    }
+
+    let content = fs.readFileSync(buildGradlePath, 'utf8');
+
+    // 检查是否已经有 namespace
+    if (content.includes('namespace')) {
+        console.log('  ℹ️ namespace already exists in:', buildGradlePath);
+        return true;
+    }
+
+    // 在 android { 后添加 namespace
+    const androidBlockRegex = /android\s*\{/;
+    if (androidBlockRegex.test(content)) {
+        content = content.replace(androidBlockRegex, `android {\n    namespace "${namespace}"`);
+        fs.writeFileSync(buildGradlePath, content, 'utf8');
+        console.log('  ✅ Added namespace to:', buildGradlePath);
+        return true;
+    } else {
+        console.log('  ⚠️ Could not find android { block in:', buildGradlePath);
+        return false;
+    }
+}
+
 try {
     // 复制 capacitor 目录 (核心 Android 代码)
     const geckoCapacitorDir = path.join(GECKOVIEW_PATH, 'capacitor');
@@ -53,6 +81,11 @@ try {
     if (fs.existsSync(geckoCapacitorDir)) {
         console.log('  Copying GeckoView capacitor module...');
         copyDir(geckoCapacitorDir, targetCapacitorDir);
+
+        // 添加 namespace (AGP 8 兼容性)
+        const buildGradlePath = path.join(targetCapacitorDir, 'build.gradle');
+        addNamespace(buildGradlePath, 'com.getcapacitor.android');
+
         console.log('✅ GeckoView applied successfully!');
     } else {
         console.log('⚠️ GeckoView capacitor directory not found at:', geckoCapacitorDir);
