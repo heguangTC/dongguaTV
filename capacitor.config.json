@@ -1,17 +1,18 @@
 ﻿{
     "appId": "com.ednovas.donguatv",
-    "appName": "E视界",
-    "webDir": "public",
-    "server": {
-        "url": "https://ednovas.video",
-        "cleartext": true
+    "应用程序名称": "E视界",
+    "网页目录": "公共",
+    "服务器": {
+        "网址": "https://gdjy.7766.org:31827",
+        "明文"：真
     },
-    "plugins": {
-        "StatusBar": {
-            "overlaysWebView": false,
-            "style": "DARK",
+    "插件": {
+        "状态栏": {
+            "覆盖视图网页"： false，
+            "风格": "暗黑",
             "backgroundColor": "#141414"
         },
-        "ScreenOrientation": {}
+        "屏幕方向": {}
     }
+
 }
